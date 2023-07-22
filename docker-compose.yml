@@ -1,9 +1,9 @@
 version: '3.1'
 services:
   stats-server:
-    build: ./statSvc
-    image: dock_image_service
-    container_name: dock_container_service
+    build: ./statParent
+    image: dock_image_stats
+    container_name: dock_container_stats
     ports:
       - "9090:9090"
     depends_on:
@@ -24,9 +24,8 @@ services:
   ewm-service:
     ports:
       - "8080:8080"
-    build: ./statMain
-    image: dock_image_main
-    container_name: dock_container_main
+    build: ./ewmService
+    container_name: dock_container_ewm
     depends_on:
       - ewm-db
 
