@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.afisha.variables.variables.TIME_FORMAT;
+import static ru.practicum.afisha.variables.Variables.TIME_FORMAT;
 
 @Getter
 @Setter

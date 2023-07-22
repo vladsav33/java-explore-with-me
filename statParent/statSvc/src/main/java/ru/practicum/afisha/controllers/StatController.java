@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.afisha.variables.variables.TIME_FORMAT;
+import static ru.practicum.afisha.variables.Variables.TIME_FORMAT;
 
 @Slf4j
 @RestController
