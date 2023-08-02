@@ -52,7 +52,7 @@ public class RequestServiceImpl implements RequestService {
             request.setStatus(RequestState.PENDING);
         } else {
             request.setStatus(RequestState.CONFIRMED);
-            event.setConfirmedRequests(event.getConfirmedRequests()+ 1);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.save(event);
         }
         repository.save(request);
