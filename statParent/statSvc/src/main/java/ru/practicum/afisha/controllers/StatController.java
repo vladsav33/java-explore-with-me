@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.afisha.dto.GetStatDto;
 import ru.practicum.afisha.dto.StatCountDto;
 import ru.practicum.afisha.dto.StatDto;
+import ru.practicum.afisha.exceptions.InvalidParameter;
 import ru.practicum.afisha.services.StatService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.afisha.variables.Variables.TIME_FORMAT;
+import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
 
 @Slf4j
 @RestController
@@ -40,10 +41,13 @@ public class StatController {
     }
 
     @GetMapping("/stats")
-    public List<StatCountDto> getStat(@RequestParam @DateTimeFormat(pattern = TIME_FORMAT) LocalDateTime start,
-                                      @RequestParam @DateTimeFormat(pattern = TIME_FORMAT) LocalDateTime end,
+    public List<StatCountDto> getStat(@RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime start,
+                                      @RequestParam @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime end,
                                       @RequestParam(required = false) String[] uris,
                                       @RequestParam(defaultValue = "false") Boolean unique) {
+        if (start.isAfter(end)) {
+            throw new InvalidParameter("Parameter start can't be after the parameter end");
+        }
         GetStatDto getStatDto = new GetStatDto(start, end, uris, unique);
         log.info("request for hits starting {} and ending {}", getStatDto.getStart(), getStatDto.getEnd());
             return service.getStat(getStatDto);
