@@ -130,6 +130,7 @@ public class EventController {
     }
 
     private void addStatEvent(HttpServletRequest request) {
+        log.info("Adding statistics to {}", STAT_SERVER);
         StatDto statDto = new StatDto();
         statDto.setApp("ewmService");
         StatClient client = new StatClient(STAT_SERVER, new RestTemplateBuilder());

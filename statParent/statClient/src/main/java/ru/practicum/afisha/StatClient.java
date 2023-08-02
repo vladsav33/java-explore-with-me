@@ -16,7 +16,6 @@ import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
 
 public class StatClient extends BaseClient {
 
-//    @Autowired
     public StatClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
