@@ -21,7 +21,7 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    protected long get(String path, @Nullable Map<String, Object> parameters) {
+    protected long get(String path, Map<String, Object> parameters) {
         StatCountDto[] list = rest.getForObject(path, StatCountDto[].class, parameters);
         if (list != null && list.length > 0) {
             return list[0].getHits();
