@@ -6,6 +6,7 @@ import ru.practicum.afisha.dto.NewEventDto;
 import ru.practicum.afisha.dto.UpdateEventAdminRequestDto;
 import ru.practicum.afisha.enums.EventState;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,9 +25,9 @@ public interface EventService {
     EventDto updateEventAdmin(long eventId, UpdateEventAdminRequestDto updateEvent);
 
     List<EventDto> getEventsPublic(Boolean paid, Long[] categories, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                   String text, Pageable page);
+                                   Boolean onylAvailable, String text, Pageable page, HttpServletRequest request);
 
-    EventDto getEventByIdPublic(long eventId);
+    EventDto getEventByIdPublic(long eventId, HttpServletRequest request);
 
     void updateEventView(long eventId, long views);
 }

@@ -2,13 +2,11 @@ package ru.practicum.afisha.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,11 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.afisha.StatClient;
 import ru.practicum.afisha.dto.EventDto;
-import ru.practicum.afisha.dto.GetStatDto;
 import ru.practicum.afisha.dto.NewEventDto;
-import ru.practicum.afisha.dto.StatDto;
 import ru.practicum.afisha.dto.UpdateEventAdminRequestDto;
 import ru.practicum.afisha.enums.EventState;
 import ru.practicum.afisha.enums.SortOrder;
@@ -33,12 +28,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
-import static ru.practicum.afisha.variables.Variables.STAT_SERVER;
 
 @Slf4j
 @RestController
@@ -102,8 +94,6 @@ public class EventController {
                                           @RequestParam(defaultValue = "0") int from,
                                           @RequestParam(defaultValue = "10") int size,
                                           HttpServletRequest request) {
-        addStatEvent(request);
-
         Pageable page = null;
         if (sort == SortOrder.EVENT_DATE) {
             page = PageRequest.of(from / size, size, Direction.DESC, "eventDate");
@@ -111,31 +101,11 @@ public class EventController {
         if (sort == SortOrder.VIEWS) {
             page = PageRequest.of(from / size, size, Direction.DESC, "views");
         }
-        return service.getEventsPublic(paid, categories, rangeStart, rangeEnd, text, page);
+        return service.getEventsPublic(paid, categories, rangeStart, rangeEnd, onlyAvailable, text, page, request);
     }
 
     @GetMapping("/events/{eventId}")
     public EventDto getEventsByIdPublic(@PathVariable long eventId, HttpServletRequest request) {
-        addStatEvent(request);
-
-        StatClient client = new StatClient(STAT_SERVER, new RestTemplateBuilder());
-        GetStatDto getStatDto = new GetStatDto(LocalDateTime.of(2000, 1, 1, 0, 0,0),
-                LocalDateTime.of(2050, 1, 1, 0, 0, 0),
-                new String[]{request.getRequestURI()}, true);
-        ResponseEntity<Object> response = client.getStat(getStatDto);
-        int views = (Integer) ((List<Map>) Arrays.asList(response.getBody()).get(0)).get(0).get("hits");
-
-        service.updateEventView(eventId, views);
-        return service.getEventByIdPublic(eventId);
-    }
-
-    private void addStatEvent(HttpServletRequest request) {
-        log.info("Adding statistics to {}", STAT_SERVER);
-        StatDto statDto = new StatDto();
-        statDto.setApp("ewmService");
-        StatClient client = new StatClient(STAT_SERVER, new RestTemplateBuilder());
-        statDto.setIp(request.getRemoteAddr());
-        statDto.setUri(request.getRequestURI());
-        client.createStat(statDto);
+        return service.getEventByIdPublic(eventId, request);
     }
 }

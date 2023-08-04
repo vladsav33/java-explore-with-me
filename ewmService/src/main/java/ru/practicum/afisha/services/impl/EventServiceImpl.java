@@ -24,7 +24,9 @@ import ru.practicum.afisha.repositories.CategoryRepository;
 import ru.practicum.afisha.repositories.EventRepository;
 import ru.practicum.afisha.repositories.UserRepository;
 import ru.practicum.afisha.services.EventService;
+import ru.practicum.afisha.services.StatService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +38,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final EventMapper mapper;
+    private final StatService statService;
 
     public EventDto createEvent(long userId, NewEventDto newEventDto) {
         Event event = mapper.toEvent(newEventDto);
@@ -117,7 +120,7 @@ public class EventServiceImpl implements EventService {
     }
 
     public List<EventDto> getEventsPublic(Boolean paid, Long[] categories, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                   String text, Pageable page) {
+                                          Boolean onlyAvailable, String text, Pageable page, HttpServletRequest request) {
         BooleanExpression expression = QEvent.event.isNotNull();
         if (text != null) {
             expression = expression.and(QEvent.event.annotation.lower().contains(text.toLowerCase())
@@ -134,12 +137,18 @@ public class EventServiceImpl implements EventService {
         } else {
             expression = expression.and(QEvent.event.eventDate.after(LocalDateTime.now()));
         }
+        if (onlyAvailable != null) {
+            expression = expression.and(QEvent.event.confirmedRequests.lt(QEvent.event.participantLimit));
+        }
 
+        statService.addStatEvent(request);
         return eventRepository.findAll(expression, page).stream()
                 .map(mapper::toEventDto).collect(Collectors.toList());
     }
 
-    public EventDto getEventByIdPublic(long eventId) {
+    public EventDto getEventByIdPublic(long eventId, HttpServletRequest request) {
+        statService.addStatEvent(request);
+        updateEventView(eventId, statService.getStatEvent(request));
         return mapper.toEventDto(eventRepository.findByIdAndPublishedOnIsNotNull(eventId)
                 .orElseThrow(() -> new NoSuchEvent("No such event")));
     }

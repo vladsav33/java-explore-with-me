@@ -15,7 +15,6 @@ import ru.practicum.afisha.repositories.CompilationRepository;
 import ru.practicum.afisha.repositories.EventRepository;
 import ru.practicum.afisha.services.CompilationService;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -69,16 +68,15 @@ public class CompilationServiceImpl implements CompilationService {
 
     private void updateCompilationNew(Compilation compilation, NewCompilationDto compilationDto) {
         Set<Event> events = new HashSet<>();
-        Arrays.stream(compilationDto.getEvents())
-                .forEach(value -> events.add(eventRepository.findById(value)
+        compilationDto.getEvents().forEach(value -> events.add(eventRepository.findById(value)
                         .orElseThrow(() -> new NoSuchEvent("No such event"))));
         compilation.setEvents(events);
     }
 
     private void updateCompilationUpdate(Compilation compilation,UpdateCompilationDto compilationDto) {
         Set<Event> events = new HashSet<>();
-        Arrays.stream(compilationDto.getEvents()).forEach(value ->
-                events.add(eventRepository.findById(value).orElseThrow(() -> new NoSuchEvent("No such event"))));
+        compilationDto.getEvents().forEach(value -> events.add(eventRepository.findById(value)
+                        .orElseThrow(() -> new NoSuchEvent("No such event"))));
         compilation.setEvents(events);
     }
 }

@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.afisha.enums.RequestState;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class EventRequestStatusUpdateRequest {
-    long[] requestIds;
+    List<Long> requestIds;
     RequestState status;
 }

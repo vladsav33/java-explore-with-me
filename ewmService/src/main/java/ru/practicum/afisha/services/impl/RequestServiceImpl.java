@@ -21,7 +21,6 @@ import ru.practicum.afisha.services.RequestService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,7 +80,7 @@ public class RequestServiceImpl implements RequestService {
         List<RequestDto> confirmedRequests = new ArrayList<>();
         List<RequestDto> rejectedRequests = new ArrayList<>();
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new NoSuchEvent("No such event"));
-        Arrays.stream(updateRequest.getRequestIds()).forEach(value -> {
+        updateRequest.getRequestIds().forEach(value -> {
             Request request = repository.findById(value).orElseThrow(() -> new NoSuchRequest("No such request"));
             if (request.getStatus() == RequestState.CONFIRMED && updateRequest.getStatus() == RequestState.REJECTED) {
                 throw new ConflictException("Can't reject confirmed request");
@@ -101,10 +100,10 @@ public class RequestServiceImpl implements RequestService {
         });
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
         if (!confirmedRequests.isEmpty()) {
-            result.setConfirmedRequests(confirmedRequests.toArray(RequestDto[]::new));
+            result.setConfirmedRequests(confirmedRequests);
         }
         if (!rejectedRequests.isEmpty()) {
-            result.setRejectedRequests(rejectedRequests.toArray(RequestDto[]::new));
+            result.setRejectedRequests(rejectedRequests);
         }
         return result;
     }

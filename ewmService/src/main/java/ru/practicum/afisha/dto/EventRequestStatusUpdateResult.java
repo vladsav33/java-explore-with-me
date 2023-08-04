@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Setter
 @Getter
 public class EventRequestStatusUpdateResult {
-    RequestDto[] confirmedRequests;
-    RequestDto[] rejectedRequests;
+    List<RequestDto> confirmedRequests;
+    List<RequestDto> rejectedRequests;
 }
