@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.afisha.variables.Variables.TIME_FORMAT;
+import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
 
 @Getter
 @Setter
@@ -24,6 +24,6 @@ public class StatDto {
     private String uri;
     private String ip;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = TIME_FORMAT)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATETIME_FORMAT)
     private LocalDateTime timestamp;
 }

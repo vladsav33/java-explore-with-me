@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.practicum.afisha.dto.StatCountDto;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,12 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
+    protected long get(String path, Map<String, Object> parameters) {
+        StatCountDto[] list = rest.getForObject(path, StatCountDto[].class, parameters);
+        if (list != null && list.length > 0) {
+            return list[0].getHits();
+        }
+        return 0;
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {

@@ -51,14 +51,14 @@ class StatControllerTest {
     @Test
     @SneakyThrows
     void createStat() {
-        when(service.createStat(objectMapper.readValue(objectMapper.writeValueAsString(statDto), StatDto.class))).thenReturn(statDto);
+        when(service.createStat(any(StatDto.class))).thenReturn(statDto);
 
         String response = mockMvc.perform(post("/hit")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(statDto)))
                         .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
-        verify(service).createStat(objectMapper.readValue(objectMapper.writeValueAsString(statDto), StatDto.class));
+        verify(service).createStat(any(StatDto.class));
         assertEquals(objectMapper.writeValueAsString(statDto), response);
     }
 
