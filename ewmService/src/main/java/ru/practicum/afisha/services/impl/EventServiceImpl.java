@@ -78,7 +78,8 @@ public class EventServiceImpl implements EventService {
         return mapper.toEventDto(eventRepository.save(event));
     }
 
-    public List<EventDto> getEventsAdmin(Long[] userIds, EventState[] states, Long[] categories, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+    public List<EventDto> getEventsAdmin(Long[] userIds, EventState[] states, Long[] categories,
+                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean isPending,
                                          Pageable page) {
 
         BooleanExpression expression = QEvent.event.isNotNull();
@@ -93,6 +94,9 @@ public class EventServiceImpl implements EventService {
         }
         if (rangeStart != null) {
             expression = expression.and(QEvent.event.eventDate.between(rangeStart, rangeEnd));
+        }
+        if (isPending != null) {
+            expression = expression.and(QEvent.event.state.eq(EventState.PENDING));
         }
 
         Page<Event> eventList = eventRepository.findAll(expression, page);

@@ -20,12 +20,12 @@ public interface EventService {
     EventDto updateEvent(long userId, long eventId, UpdateEventAdminRequestDto updateEvent);
 
     List<EventDto> getEventsAdmin(Long[] userIds, EventState[] states, Long[] categories,
-                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable page);
+                                  LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean isPending, Pageable page);
 
     EventDto updateEventAdmin(long eventId, UpdateEventAdminRequestDto updateEvent);
 
     List<EventDto> getEventsPublic(Boolean paid, Long[] categories, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                   Boolean onylAvailable, String text, Pageable page, HttpServletRequest request);
+                                   Boolean onlyAvailable, String text, Pageable page, HttpServletRequest request);
 
     EventDto getEventByIdPublic(long eventId, HttpServletRequest request);
 
