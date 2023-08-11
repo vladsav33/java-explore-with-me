@@ -3,7 +3,9 @@ package ru.practicum.afisha.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.practicum.afisha.enums.StateAction;
 import ru.practicum.afisha.models.Location;
 
@@ -12,9 +14,10 @@ import java.time.LocalDateTime;
 
 import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class UpdateEventAdminRequestDto {
     @Size(min = 20, max = 2000)
     private String annotation;

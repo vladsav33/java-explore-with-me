@@ -17,7 +17,6 @@ import static ru.practicum.afisha.variables.Variables.DATETIME_FORMAT;
 @AllArgsConstructor
 @Getter
 @Setter
-@Data
 public class CommentDto {
     private Long id;
     private EventDto event;

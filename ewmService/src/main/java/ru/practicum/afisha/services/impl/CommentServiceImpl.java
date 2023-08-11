@@ -43,14 +43,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public CommentDto updateCommentByIdAdmin(long userId, long eventId, long commentId, CommentDto commentDto) {
-        Comment comment = repository.findById(commentId).orElseThrow(() -> new NoSuchComment("Comment was not found"));
+        Comment comment = getComment(commentId);
         checkEventState(eventId);
         comment.setCommentText(commentDto.getCommentText());
         return mapper.toCommentDto(repository.save(comment));
     }
 
     public CommentDto updateCommentByIdPrivate(long userId, long eventId, long commentId, CommentDto commentDto) {
-        Comment comment = repository.findById(commentId).orElseThrow(() -> new NoSuchComment("Comment was not found"));
+        Comment comment = getComment(commentId);
         checkEventState(eventId);
         checkEventOwner(userId, eventId);
         comment.setCommentText(commentDto.getCommentText());
@@ -58,23 +58,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     public List<CommentDto> getCommentsByEventAdmin(long eventId) {
-        return repository.findAllByEventId(eventId).stream().map(mapper::toCommentDto).collect(Collectors.toList());
+        return getCommentsDto(eventId);
     }
 
     public List<CommentDto> getCommentsByEventPrivate(long userId, long eventId) {
         checkEventOwner(userId, eventId);
-        return repository.findAllByEventId(eventId).stream().map(mapper::toCommentDto).collect(Collectors.toList());
+        return getCommentsDto(eventId);
     }
 
     private void checkEventState(long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NoSuchEvent("Event was not found"));
+        Event event = getEvent(eventId);
         if (event.getState() == EventState.PUBLISHED) {
             throw new ConflictException("Event is already published");
         }
     }
 
     private void checkEventOwner(long userId, long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NoSuchEvent("Event was not found"));
+        Event event = getEvent(eventId);
         if (event.getInitiator().getId() != userId) {
             throw new ConflictException("Can't access comments on the event created by someone else");
         }
@@ -82,11 +82,23 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment createComment(CommentDto commentDto, long userId, long eventId) {
         commentDto.setUpdated(LocalDateTime.now());
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NoSuchEvent("Event was not found"));
+        Event event = getEvent(eventId);
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchUser("User was not found"));
         Comment comment = mapper.toComment(commentDto);
         comment.setUser(user);
         comment.setEvent(event);
         return comment;
+    }
+
+    private Event getEvent(long eventId) {
+        return eventRepository.findById(eventId).orElseThrow(() -> new NoSuchEvent("Event was not found"));
+    }
+
+    private Comment getComment(long commentId) {
+        return repository.findById(commentId).orElseThrow(() -> new NoSuchComment("Comment was not found"));
+    }
+
+    private List<CommentDto> getCommentsDto(long eventId) {
+        return repository.findAllByEventId(eventId).stream().map(mapper::toCommentDto).collect(Collectors.toList());
     }
 }
