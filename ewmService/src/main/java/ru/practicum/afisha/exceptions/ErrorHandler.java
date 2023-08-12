@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.afisha.controllers.CategoryController;
+import ru.practicum.afisha.controllers.CommentController;
 import ru.practicum.afisha.controllers.CompilationController;
 import ru.practicum.afisha.controllers.EventController;
 import ru.practicum.afisha.controllers.RequestController;
@@ -15,7 +16,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Map;
 
 @RestControllerAdvice(assignableTypes = {UserController.class, CategoryController.class, RequestController.class,
-                                         EventController.class, CompilationController.class})
+                                         EventController.class, CompilationController.class, CommentController.class})
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler(NoSuchUser.class)
@@ -64,6 +65,13 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleNoCompilation(final NoSuchCompilation exception) {
         log.warn(exception.getMessage());
-        return Map.of("Data validation error", exception.getMessage());
+        return Map.of("Object not found", "No such compilation");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleNoSuchComment(final NoSuchComment exception) {
+        log.warn(exception.getMessage());
+        return Map.of("Object not found", "No such comment");
     }
 }

@@ -70,11 +70,12 @@ public class EventController {
                                          @RequestParam (required = false) Long[] categories,
                                          @RequestParam (required = false) @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime rangeStart,
                                          @RequestParam (required = false) @DateTimeFormat(pattern = DATETIME_FORMAT) LocalDateTime rangeEnd,
+                                         @RequestParam (required = false) Boolean isPending,
                                          @RequestParam(defaultValue = "0") int from,
                                          @RequestParam(defaultValue = "10") int size) {
         Pageable page = PageRequest.of(from / size, size);
         log.info("Looking for events (admin endpoint) for users {} and categories {}", users, categories);
-        return service.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, page);
+        return service.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, isPending, page);
     }
 
     @PatchMapping("/admin/events/{eventId}")
