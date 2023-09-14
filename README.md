@@ -47,6 +47,3 @@
    - /admin/{userId}/events/{eventId}/comments GET, POST - создание и получение комментариев
    - /admin/{userId}/events/{eventId}/comments/{commentId} PATCH - редактирование комментария
 
-
-The link to pull request [feature_moderation_enhancement](https://github.com/vladsav33/java-explore-with-me/pull/6)
-
