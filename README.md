@@ -47,3 +47,7 @@
    - /admin/{userId}/events/{eventId}/comments GET, POST - создание и получение комментариев
    - /admin/{userId}/events/{eventId}/comments/{commentId} PATCH - редактирование комментария
 
+## Развертывание
+
+ - mvn clean package
+ - docker-compose up
